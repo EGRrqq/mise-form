@@ -3,21 +3,8 @@
 import { useState } from "react";
 
 import type { BookingFormData } from "../types/booking";
+import { BOOKING_FORM } from "../constants/booking";
 import styles from "@/styles/BookingForm.module.css";
-
-const timeSlots = [
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",
-];
 
 export default function BookingForm() {
   const [errors, setErrors] = useState<
@@ -44,12 +31,12 @@ export default function BookingForm() {
       className="flex flex-col gap-4 max-w-md w-full mx-auto p-6"
     >
       <h1 className="text-2xl font-semibold text-center mb-2">
-        Бронирование столика
+        {BOOKING_FORM.title}
       </h1>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="name" className="text-sm font-medium">
-          Имя гостя
+          {BOOKING_FORM.labelName}
         </label>
         <input
           type="text"
@@ -65,14 +52,14 @@ export default function BookingForm() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="phone" className="text-sm font-medium">
-          Телефон
+          {BOOKING_FORM.labelPhone}
         </label>
         <input
           type="tel"
           id="phone"
           name="phone"
           required
-          placeholder="+7 (999) 123-45-67"
+          placeholder={BOOKING_FORM.placeholderPhone}
           className={styles.input}
         />
         {errors.phone && (
@@ -82,7 +69,7 @@ export default function BookingForm() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="date" className="text-sm font-medium">
-          Дата
+          {BOOKING_FORM.labelDate}
         </label>
         <input
           type="date"
@@ -98,7 +85,7 @@ export default function BookingForm() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="time" className="text-sm font-medium">
-          Время
+          {BOOKING_FORM.labelTime}
         </label>
         <select
           id="time"
@@ -106,8 +93,8 @@ export default function BookingForm() {
           required
           className={`${styles.input} ${styles.select}`}
         >
-          <option value="">Выберите время</option>
-          {timeSlots.map((slot) => (
+          <option value="">{BOOKING_FORM.optionPlaceholder}</option>
+          {BOOKING_FORM.timeSlots.map((slot) => (
             <option key={slot} value={slot}>
               {slot}
             </option>
@@ -121,7 +108,7 @@ export default function BookingForm() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="guests" className="text-sm font-medium">
-          Количество гостей
+          {BOOKING_FORM.labelGuests}
         </label>
         <input
           type="number"
@@ -142,7 +129,7 @@ export default function BookingForm() {
         type="submit"
         className="bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors"
       >
-        Забронировать
+        {BOOKING_FORM.buttonSubmit}
       </button>
     </form>
   );
