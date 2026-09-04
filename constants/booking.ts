@@ -1,3 +1,15 @@
+export const VALIDATION_MESSAGES = {
+  nameRequired: "Имя обязательно",
+  nameMinLength: "Имя должно содержать минимум 2 символа",
+  phoneFormat: "Введите номер в формате +7XXXXXXXXXX",
+  dateRequired: "Дата обязательна",
+  datePast: "Дата не может быть раньше сегодняшнего дня",
+  timeRequired: "Выберите время",
+  timeInvalid: "Выберите доступный слот времени",
+  guestsRequired: "Количество гостей обязательно",
+  guestsRange: "Количество гостей должно быть от 1 до 12",
+} as const;
+
 export const BOOKING_FORM = {
   title: "Бронирование столика",
   labelName: "Имя гостя",
