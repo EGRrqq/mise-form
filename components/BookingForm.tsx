@@ -1,71 +1,26 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
-import type { BookingFormData } from "../types/booking";
-import { BOOKING_FORM } from "../constants/booking";
-import {
-  validateName,
-  validatePhone,
-  validateDate,
-  validateTime,
-  validateGuests,
-} from "../utils/validate";
+import type { BookingFormData } from "@/types/booking";
+import { BOOKING_FORM } from "@/constants/booking";
+import { useBookingForm } from "@/hooks/useBookingForm";
+import FormField from "./FormField";
 import styles from "@/styles/BookingForm.module.css";
 
 interface BookingFormProps {
   onSubmit: (data: BookingFormData) => void;
 }
 
-type Errors = Partial<Record<keyof BookingFormData, string>>;
-
-const initialForm: BookingFormData = {
-  name: "",
-  phone: "",
-  date: "",
-  time: "",
-  guests: 1,
-};
-
 export default function BookingForm({ onSubmit }: BookingFormProps) {
-  const [form, setForm] = useState<BookingFormData>(initialForm);
-  const [errors, setErrors] = useState<Errors>({});
+  const { form, errors, handleChange, handleBlur, handleSubmit } =
+    useBookingForm(onSubmit);
+
   const hydrated = useSyncExternalStore(
     () => () => {},
     () => true,
     () => false,
   );
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    const key = name as keyof BookingFormData;
-    const nextValue = key === "guests" ? Number(value) : value;
-    setForm((prev) => ({ ...prev, [key]: nextValue }));
-
-    setErrors((prev) => {
-      if (!prev[key]) return prev;
-      const message = validators[key](nextValue);
-      return { ...prev, [key]: message ?? undefined };
-    });
-  };
-
-  const handleBlur = (field: keyof BookingFormData) => {
-    const message = validators[field](form[field]);
-    setErrors((prev) => ({ ...prev, [field]: message ?? undefined }));
-  };
-
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const newErrors = validateAll(form);
-    setErrors(newErrors);
-
-    const hasErrors = Object.values(newErrors).some(Boolean);
-    if (!hasErrors) {
-      onSubmit(form);
-    }
-  };
 
   return (
     <form
@@ -76,86 +31,70 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
         {BOOKING_FORM.title}
       </h1>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm font-medium">
-          {BOOKING_FORM.labelName}
-        </label>
+      <FormField
+        htmlFor="name"
+        label={BOOKING_FORM.labelName}
+        error={errors.name}
+      >
         <input
           type="text"
           id="name"
           name="name"
+          autoComplete="name"
           value={form.name}
           onChange={handleChange}
-          onBlur={() => handleBlur("name")}
+          onBlur={handleBlur}
           className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
         />
-        <div className={styles.errorMessage}>
-          <span
-            className={`${styles.errorText} ${errors.name ? styles.visible : ""}`}
-            aria-hidden={!errors.name}
-          >
-            {errors.name ?? ""}
-          </span>
-        </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="phone" className="text-sm font-medium">
-          {BOOKING_FORM.labelPhone}
-        </label>
+      <FormField
+        htmlFor="phone"
+        label={BOOKING_FORM.labelPhone}
+        error={errors.phone}
+      >
         <input
           type="tel"
           id="phone"
           name="phone"
+          autoComplete="tel"
           value={form.phone}
           onChange={handleChange}
-          onBlur={() => handleBlur("phone")}
+          onBlur={handleBlur}
           placeholder={BOOKING_FORM.placeholderPhone}
           className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
         />
-        <div className={styles.errorMessage}>
-          <span
-            className={`${styles.errorText} ${errors.phone ? styles.visible : ""}`}
-            aria-hidden={!errors.phone}
-          >
-            {errors.phone ?? ""}
-          </span>
-        </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="date" className="text-sm font-medium">
-          {BOOKING_FORM.labelDate}
-        </label>
+      <FormField
+        htmlFor="date"
+        label={BOOKING_FORM.labelDate}
+        error={errors.date}
+      >
         <input
           type="date"
           id="date"
           name="date"
+          autoComplete="off"
           value={form.date}
           onChange={handleChange}
-          onBlur={() => handleBlur("date")}
+          onBlur={handleBlur}
           className={`${styles.input} ${errors.date ? styles.inputError : ""}`}
         />
-        <div className={styles.errorMessage}>
-          <span
-            className={`${styles.errorText} ${errors.date ? styles.visible : ""}`}
-            aria-hidden={!errors.date}
-          >
-            {errors.date ?? ""}
-          </span>
-        </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="time" className="text-sm font-medium">
-          {BOOKING_FORM.labelTime}
-        </label>
+      <FormField
+        htmlFor="time"
+        label={BOOKING_FORM.labelTime}
+        error={errors.time}
+      >
         <select
           id="time"
           name="time"
+          autoComplete="off"
           value={form.time}
           onChange={handleChange}
-          onBlur={() => handleBlur("time")}
+          onBlur={handleBlur}
           className={`${styles.input} ${styles.select} ${errors.time ? styles.inputError : ""}`}
         >
           <option value="">{BOOKING_FORM.optionPlaceholder}</option>
@@ -165,40 +104,26 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
             </option>
           ))}
         </select>
-        <div className={styles.errorMessage}>
-          <span
-            className={`${styles.errorText} ${errors.time ? styles.visible : ""}`}
-            aria-hidden={!errors.time}
-          >
-            {errors.time ?? ""}
-          </span>
-        </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="guests" className="text-sm font-medium">
-          {BOOKING_FORM.labelGuests}
-        </label>
+      <FormField
+        htmlFor="guests"
+        label={BOOKING_FORM.labelGuests}
+        error={errors.guests}
+      >
         <input
           type="number"
           id="guests"
           name="guests"
+          autoComplete="off"
           value={form.guests}
           onChange={handleChange}
-          onBlur={() => handleBlur("guests")}
+          onBlur={handleBlur}
           min={1}
           max={12}
           className={`${styles.input} ${errors.guests ? styles.inputError : ""}`}
         />
-        <div className={styles.errorMessage}>
-          <span
-            className={`${styles.errorText} ${errors.guests ? styles.visible : ""}`}
-            aria-hidden={!errors.guests}
-          >
-            {errors.guests ?? ""}
-          </span>
-        </div>
-      </div>
+      </FormField>
 
       <button
         type="submit"
@@ -209,25 +134,4 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
       </button>
     </form>
   );
-}
-
-const validators: Record<
-  keyof BookingFormData,
-  (value: BookingFormData[keyof BookingFormData]) => string | null
-> = {
-  name: (v) => validateName(v as string),
-  phone: (v) => validatePhone(v as string),
-  date: (v) => validateDate(v as string),
-  time: (v) => validateTime(v as string),
-  guests: (v) => validateGuests(v as number),
-};
-
-function validateAll(form: BookingFormData): Errors {
-  return {
-    name: validateName(form.name) ?? undefined,
-    phone: validatePhone(form.phone) ?? undefined,
-    date: validateDate(form.date) ?? undefined,
-    time: validateTime(form.time) ?? undefined,
-    guests: validateGuests(form.guests) ?? undefined,
-  };
 }
