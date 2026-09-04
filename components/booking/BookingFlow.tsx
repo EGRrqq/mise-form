@@ -3,21 +3,22 @@
 import BookingForm from "./BookingForm";
 import ConfirmationScreen from "./ConfirmationScreen";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
+import styles from "@/styles/flow.module.css";
 
 export default function BookingFlow() {
   const { status, confirmed, submit, reset } = useBookingFlow();
-
-  if (status === "success" && confirmed) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <ConfirmationScreen data={confirmed} onReset={reset} />
-      </div>
-    );
-  }
+  const isSuccess = status === "success" && confirmed;
 
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <BookingForm onSubmit={submit} loading={status === "loading"} />
+    <div
+      key={isSuccess ? "confirmation" : "form"}
+      className={`${styles.layout} ${styles.enter}`}
+    >
+      {isSuccess ? (
+        <ConfirmationScreen data={confirmed} onReset={reset} />
+      ) : (
+        <BookingForm onSubmit={submit} loading={status === "loading"} />
+      )}
     </div>
   );
 }
