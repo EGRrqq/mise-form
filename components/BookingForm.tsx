@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { BookingFormData } from "@/types/booking";
+import type { BookingFormData } from "../types/booking";
 import styles from "@/styles/BookingForm.module.css";
 
 const timeSlots = [
