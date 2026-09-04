@@ -1,28 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
-import type { BookingFormData } from "@/types/booking";
-import { BOOKING_FORM } from "@/constants/booking";
+import type { BookingFormData } from "../types/booking";
+import { BOOKING_FORM } from "../constants/booking";
+import {
+  validateName,
+  validatePhone,
+  validateDate,
+  validateTime,
+  validateGuests,
+} from "../utils/validate";
 import styles from "@/styles/BookingForm.module.css";
 
-export default function BookingForm() {
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof BookingFormData, string>>
-  >({});
+interface BookingFormProps {
+  onSubmit: (data: BookingFormData) => void;
+}
+
+type Errors = Partial<Record<keyof BookingFormData, string>>;
+
+const initialForm: BookingFormData = {
+  name: "",
+  phone: "",
+  date: "",
+  time: "",
+  guests: 1,
+};
+
+export default function BookingForm({ onSubmit }: BookingFormProps) {
+  const [form, setForm] = useState<BookingFormData>(initialForm);
+  const [errors, setErrors] = useState<Errors>({});
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    const key = name as keyof BookingFormData;
+    const nextValue = key === "guests" ? Number(value) : value;
+    setForm((prev) => ({ ...prev, [key]: nextValue }));
+
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const message = validators[key](nextValue);
+      return { ...prev, [key]: message ?? undefined };
+    });
+  };
+
+  const handleBlur = (field: keyof BookingFormData) => {
+    const message = validators[field](form[field]);
+    setErrors((prev) => ({ ...prev, [field]: message ?? undefined }));
+  };
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
+    const newErrors = validateAll(form);
+    setErrors(newErrors);
 
-    console.log({
-      name: formData.get("name") as string,
-      phone: formData.get("phone") as string,
-      date: formData.get("date") as string,
-      time: formData.get("time") as string,
-      guests: Number(formData.get("guests")),
-    });
+    const hasErrors = Object.values(newErrors).some(Boolean);
+    if (!hasErrors) {
+      onSubmit(form);
+    }
   };
 
   return (
@@ -42,12 +84,19 @@ export default function BookingForm() {
           type="text"
           id="name"
           name="name"
-          required
-          className={styles.input}
+          value={form.name}
+          onChange={handleChange}
+          onBlur={() => handleBlur("name")}
+          className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
         />
-        {errors.name && (
-          <span className="text-red-500 text-sm">{errors.name}</span>
-        )}
+        <div className={styles.errorMessage}>
+          <span
+            className={`${styles.errorText} ${errors.name ? styles.visible : ""}`}
+            aria-hidden={!errors.name}
+          >
+            {errors.name ?? ""}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -58,13 +107,20 @@ export default function BookingForm() {
           type="tel"
           id="phone"
           name="phone"
-          required
+          value={form.phone}
+          onChange={handleChange}
+          onBlur={() => handleBlur("phone")}
           placeholder={BOOKING_FORM.placeholderPhone}
-          className={styles.input}
+          className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
         />
-        {errors.phone && (
-          <span className="text-red-500 text-sm">{errors.phone}</span>
-        )}
+        <div className={styles.errorMessage}>
+          <span
+            className={`${styles.errorText} ${errors.phone ? styles.visible : ""}`}
+            aria-hidden={!errors.phone}
+          >
+            {errors.phone ?? ""}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -75,12 +131,19 @@ export default function BookingForm() {
           type="date"
           id="date"
           name="date"
-          required
-          className={styles.input}
+          value={form.date}
+          onChange={handleChange}
+          onBlur={() => handleBlur("date")}
+          className={`${styles.input} ${errors.date ? styles.inputError : ""}`}
         />
-        {errors.date && (
-          <span className="text-red-500 text-sm">{errors.date}</span>
-        )}
+        <div className={styles.errorMessage}>
+          <span
+            className={`${styles.errorText} ${errors.date ? styles.visible : ""}`}
+            aria-hidden={!errors.date}
+          >
+            {errors.date ?? ""}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -90,8 +153,10 @@ export default function BookingForm() {
         <select
           id="time"
           name="time"
-          required
-          className={`${styles.input} ${styles.select}`}
+          value={form.time}
+          onChange={handleChange}
+          onBlur={() => handleBlur("time")}
+          className={`${styles.input} ${styles.select} ${errors.time ? styles.inputError : ""}`}
         >
           <option value="">{BOOKING_FORM.optionPlaceholder}</option>
           {BOOKING_FORM.timeSlots.map((slot) => (
@@ -100,10 +165,14 @@ export default function BookingForm() {
             </option>
           ))}
         </select>
-
-        {errors.time && (
-          <span className="text-red-500 text-sm">{errors.time}</span>
-        )}
+        <div className={styles.errorMessage}>
+          <span
+            className={`${styles.errorText} ${errors.time ? styles.visible : ""}`}
+            aria-hidden={!errors.time}
+          >
+            {errors.time ?? ""}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -114,23 +183,51 @@ export default function BookingForm() {
           type="number"
           id="guests"
           name="guests"
-          required
+          value={form.guests}
+          onChange={handleChange}
+          onBlur={() => handleBlur("guests")}
           min={1}
           max={12}
-          defaultValue={1}
-          className={styles.input}
+          className={`${styles.input} ${errors.guests ? styles.inputError : ""}`}
         />
-        {errors.guests && (
-          <span className="text-red-500 text-sm">{errors.guests}</span>
-        )}
+        <div className={styles.errorMessage}>
+          <span
+            className={`${styles.errorText} ${errors.guests ? styles.visible : ""}`}
+            aria-hidden={!errors.guests}
+          >
+            {errors.guests ?? ""}
+          </span>
+        </div>
       </div>
 
       <button
         type="submit"
-        className="bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors"
+        disabled={!hydrated}
+        className="bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-700"
       >
         {BOOKING_FORM.buttonSubmit}
       </button>
     </form>
   );
+}
+
+const validators: Record<
+  keyof BookingFormData,
+  (value: BookingFormData[keyof BookingFormData]) => string | null
+> = {
+  name: (v) => validateName(v as string),
+  phone: (v) => validatePhone(v as string),
+  date: (v) => validateDate(v as string),
+  time: (v) => validateTime(v as string),
+  guests: (v) => validateGuests(v as number),
+};
+
+function validateAll(form: BookingFormData): Errors {
+  return {
+    name: validateName(form.name) ?? undefined,
+    phone: validatePhone(form.phone) ?? undefined,
+    date: validateDate(form.date) ?? undefined,
+    time: validateTime(form.time) ?? undefined,
+    guests: validateGuests(form.guests) ?? undefined,
+  };
 }

@@ -4,6 +4,24 @@
   @apply border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-amber-600;
 }
 
+.inputError {
+  @apply border-red-500;
+}
+
+.errorMessage {
+  min-height: 1.5rem;
+}
+
+.errorText {
+  @apply text-red-500 text-sm;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.errorText.visible {
+  opacity: 1;
+}
+
 .select {
   @apply appearance-none pr-8 bg-white bg-no-repeat;
   background-size: 20px 15px;
