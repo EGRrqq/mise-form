@@ -34,3 +34,12 @@ export const BOOKING_FORM = {
     "22:00",
   ],
 } as const;
+
+export const CONFIRMATION = {
+  title: "Бронирование подтверждено",
+  labelName: "Имя",
+  labelDate: "Дата",
+  labelTime: "Время",
+  labelGuests: "Гости",
+  buttonAnother: "Забронировать ещё",
+} as const;
