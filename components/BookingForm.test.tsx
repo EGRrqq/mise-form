@@ -1,11 +1,13 @@
 import { render, screen, cleanup } from "@testing-library/react";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import BookingForm from "./BookingForm";
 import { BOOKING_FORM } from "@/constants/booking";
 
 describe("BookingForm отбражение элементов", () => {
+  const onSubmit = vi.fn();
+
   beforeEach(() => {
-    render(<BookingForm />);
+    render(<BookingForm onSubmit={onSubmit} />);
   });
 
   afterEach(() => {
