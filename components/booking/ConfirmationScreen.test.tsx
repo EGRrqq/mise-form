@@ -1,8 +1,8 @@
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import ConfirmationScreen from "./ConfirmationScreen";
-import { CONFIRMATION } from "../constants/booking";
-import type { BookingFormData } from "../types/booking";
+import { CONFIRMATION } from "@/constants/booking";
+import type { BookingFormData } from "@/types/booking";
 
 const mockData: BookingFormData = {
   name: "Иван",
