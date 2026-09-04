@@ -1,11 +1,11 @@
 @reference "./globals.css";
 
 .wrapper {
-  @apply flex flex-col gap-6 max-w-md w-full mx-auto p-6 text-center;
+  @apply flex flex-col gap-6 max-w-md w-full mx-auto p-6 text-center xl:max-w-lg xl:gap-8 xl:p-10;
 }
 
 .title {
-  @apply text-2xl font-semibold;
+  @apply text-2xl font-semibold xl:text-3xl;
 }
 
 .summary {
@@ -17,13 +17,13 @@
 }
 
 .label {
-  @apply text-sm font-medium text-gray-500;
+  @apply text-sm font-medium text-muted;
 }
 
 .value {
-  @apply text-gray-900;
+  @apply text-ink;
 }
 
 .button {
-  @apply bg-amber-700 text-white rounded py-2.5 font-medium hover:bg-amber-800 transition-colors;
+  @apply bg-gold text-ink rounded py-2.5 font-medium hover:bg-gold-dark transition-colors;
 }

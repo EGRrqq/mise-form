@@ -1,15 +1,15 @@
 @reference "./globals.css";
 
 .form {
-  @apply flex flex-col gap-4 max-w-md w-full mx-auto p-6;
+  @apply flex flex-col gap-4 max-w-md w-full mx-auto p-6 xl:max-w-lg xl:gap-5 xl:p-10;
 }
 
 .title {
-  @apply text-2xl font-semibold text-center mb-2;
+  @apply text-2xl font-semibold text-center mb-2 xl:text-3xl;
 }
 
 .input {
-  @apply border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-amber-600;
+  @apply border border-line rounded px-3 py-2 text-ink bg-white focus:outline-none focus:border-gold;
 }
 
 .inputError {
@@ -38,7 +38,7 @@
 }
 
 .button {
-  @apply bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-700;
+  @apply bg-gold text-ink rounded py-2.5 mt-2 font-medium hover:bg-gold-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold;
 }
 
 .buttonContent {
@@ -47,8 +47,8 @@
 
 .spinner {
   @apply inline-block h-4 w-4 rounded-full;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-top-color: #fff;
+  border: 2px solid rgba(26, 26, 26, 0.2);
+  border-top-color: #1a1a1a;
   animation: spin 0.7s linear infinite;
 }
 
