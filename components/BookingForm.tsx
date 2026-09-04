@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import type { BookingFormData } from "../types/booking";
-import { BOOKING_FORM } from "../constants/booking";
+import type { BookingFormData } from "@/types/booking";
+import { BOOKING_FORM } from "@/constants/booking";
 import styles from "@/styles/BookingForm.module.css";
 
 export default function BookingForm() {
