@@ -1,5 +1,7 @@
 # Бронирование столика в ресторане
 
+**[Лайв-версия](https://mise-form.vercel.app/)**
+
 Тестовое задание MISE - Trainee Frontend Developer. Страница онлайн-бронирования столика: форма бронирования + экран подтверждения.
 
 **Стек:** Next.js (App Router), React 19, TypeScript, Tailwind CSS 4 (CSS Modules), Vitest.
