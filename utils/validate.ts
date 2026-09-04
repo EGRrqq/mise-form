@@ -1,4 +1,5 @@
 import { BOOKING_FORM, VALIDATION_MESSAGES } from "../constants/booking";
+import { getAvailableTimeSlots } from "./timeSlots";
 
 export function validateName(value: string): string | null {
   if (!value.trim()) {
@@ -41,6 +42,20 @@ export function validateTime(value: string): string | null {
     )
   ) {
     return VALIDATION_MESSAGES.timeInvalid;
+  }
+  return null;
+}
+
+export function validateDateWithAvailability(
+  value: string,
+  now: Date = new Date(),
+): string | null {
+  const base = validateDate(value);
+  if (base) {
+    return base;
+  }
+  if (getAvailableTimeSlots(value, now).length === 0) {
+    return VALIDATION_MESSAGES.dateNoSlots;
   }
   return null;
 }

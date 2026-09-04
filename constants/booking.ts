@@ -4,6 +4,8 @@ export const VALIDATION_MESSAGES = {
   phoneFormat: "Введите номер в формате +7XXXXXXXXXX",
   dateRequired: "Дата обязательна",
   datePast: "Дата не может быть раньше сегодняшнего дня",
+  dateNoSlots:
+    "На сегодня больше нет свободного времени. Попробуйте выбрать другой день",
   timeRequired: "Выберите время",
   timeInvalid: "Выберите доступный слот времени",
   guestsRequired: "Количество гостей обязательно",

@@ -17,8 +17,14 @@ export default function BookingForm({
   onSubmit,
   loading = false,
 }: BookingFormProps) {
-  const { form, errors, handleChange, handleBlur, handleSubmit } =
-    useBookingForm(onSubmit);
+  const {
+    form,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    availableTimeSlots,
+  } = useBookingForm(onSubmit);
 
   const hydrated = useSyncExternalStore(
     () => () => {},
@@ -97,7 +103,7 @@ export default function BookingForm({
           className={`${styles.input} ${styles.select} ${errors.time ? styles.inputError : ""}`}
         >
           <option value="">{BOOKING_FORM.optionPlaceholder}</option>
-          {BOOKING_FORM.timeSlots.map((slot) => (
+          {availableTimeSlots.map((slot) => (
             <option key={slot} value={slot}>
               {slot}
             </option>

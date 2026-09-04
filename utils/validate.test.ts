@@ -3,6 +3,7 @@ import {
   validateName,
   validatePhone,
   validateDate,
+  validateDateWithAvailability,
   validateTime,
   validateGuests,
 } from "./validate";
@@ -73,6 +74,36 @@ describe("validateDate", () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const iso = tomorrow.toISOString().slice(0, 10);
     expect(validateDate(iso)).toBeNull();
+  });
+});
+
+describe("validateDateWithAvailability", () => {
+  it("прошлая дата → ошибка прошлого дня", () => {
+    expect.assertions(1);
+    const now = new Date("2026-09-04T12:00:00");
+    expect(validateDateWithAvailability("2026-09-03", now)).toBe(
+      VALIDATION_MESSAGES.datePast,
+    );
+  });
+
+  it("будущая дата → null (слоты доступны)", () => {
+    expect.assertions(1);
+    const now = new Date("2026-09-04T23:00:00");
+    expect(validateDateWithAvailability("2026-09-05", now)).toBeNull();
+  });
+
+  it("сегодня с доступными слотами → null", () => {
+    expect.assertions(1);
+    const now = new Date("2026-09-04T10:00:00");
+    expect(validateDateWithAvailability("2026-09-04", now)).toBeNull();
+  });
+
+  it("сегодня без слотов → ошибка noSlots", () => {
+    expect.assertions(1);
+    const now = new Date("2026-09-04T23:00:00");
+    expect(validateDateWithAvailability("2026-09-04", now)).toBe(
+      VALIDATION_MESSAGES.dateNoSlots,
+    );
   });
 });
 
