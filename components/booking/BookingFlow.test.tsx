@@ -65,7 +65,7 @@ describe("Интеграция: форма → подтверждение", () =
     expect(screen.getByText("4")).toBeInTheDocument();
   });
 
-  it("кнопка «Забронировать ещё» возвращает к пустой форме", () => {
+  it("кнопка 'Забронировать ещё' возвращает к пустой форме", () => {
     expect.assertions(4);
 
     render(<BookingFlow />);
