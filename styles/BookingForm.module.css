@@ -1,5 +1,13 @@
 @reference "./globals.css";
 
+.form {
+  @apply flex flex-col gap-4 max-w-md w-full mx-auto p-6;
+}
+
+.title {
+  @apply text-2xl font-semibold text-center mb-2;
+}
+
 .input {
   @apply border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-amber-600;
 }
@@ -27,4 +35,8 @@
   background-size: 20px 15px;
   background-position: right 0.9rem center;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+}
+
+.button {
+  @apply bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-700;
 }

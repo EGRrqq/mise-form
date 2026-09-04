@@ -23,13 +23,8 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
   );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 max-w-md w-full mx-auto p-6"
-    >
-      <h1 className="text-2xl font-semibold text-center mb-2">
-        {BOOKING_FORM.title}
-      </h1>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <h1 className={styles.title}>{BOOKING_FORM.title}</h1>
 
       <FormField
         htmlFor="name"
@@ -125,11 +120,7 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
         />
       </FormField>
 
-      <button
-        type="submit"
-        disabled={!hydrated}
-        className="bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-700"
-      >
+      <button type="submit" disabled={!hydrated} className={styles.button}>
         {BOOKING_FORM.buttonSubmit}
       </button>
     </form>
