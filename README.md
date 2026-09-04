@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Бронирование столика в ресторане
 
-## Getting Started
+Тестовое задание MISE - Trainee Frontend Developer. Страница онлайн-бронирования столика: форма бронирования + экран подтверждения.
 
-First, run the development server:
+**Стек:** Next.js (App Router), React 19, TypeScript, Tailwind CSS 4 (CSS Modules), Vitest.
+
+## Запуск
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Приложение будет доступно на http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Команды
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm test         # vitest (45 тестов)
+pnpm build        # продакшен-сборка
+pnpm lint         # eslint
+pnpm format       # prettier
+```
 
-## Learn More
+## Что реализовано
 
-To learn more about Next.js, take a look at the following resources:
+- **Форма бронирования** - имя, телефон, дата, время, гости (1-12). Все поля обязательны.
+- **Валидация** - телефон (+7/8, 10 цифр), дата не раньше сегодня, время из слотов 12:00-22:00. Ошибки красным текстом под полем, не `alert()`.
+  - Проверка при отправке и при потере фокуса (onBlur), плюс live-валидация после первой ошибки.
+- **Отправка** - имитация через `setTimeout` 1.5 с, лоадер на кнопке и `disabled` во время отправки.
+- **Экран подтверждения** - сводка данных (имя, дата, время, гости) и кнопка "Забронировать ещё", возвращающая к пустой форме.
+- **Анимация перехода** - плавный fade между формой и экраном подтверждения.
+- **Адаптивность** - корректный вид на 375px и 1280px, шрифт системный (sans-serif), палитра #FAFAF8 / #C8963E / #1A1A1A.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Сделано сверх ТЗ
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Интеллектуальные слоты времени.** На сегодня показываются только ещё не наступившие слоты, для будущей даты - все. Если на сегодня свободных слотов нет - форма подсказывает выбрать другой день. Чистые функции в `utils/timeSlots.ts` + unit-тесты на них.
+- **Live-валидация.** После первой ошибки поле перепроверяется при вводе, а не только на blur и submit.
+- **Антипрыжок формы.** Контейнер ошибки фиксированной высоты, появление через opacity - макет не сдвигается при показе/скрытии ошибок.
+- **Автосброс времени.** При смене даты на ту, где выбранный слот недоступен, время очищается.
+- **45 unit-тестов** (ТЗ их не требовало).
+- **SSR-изоляция.** `app/page.tsx` - серверный компонент, вся клиентская логика - в `BookingFlow`; нет `"use client"` на всю страницу.
 
-## Deploy on Vercel
+## Принятые решения
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Управление состоянием - в хуках** (`useBookingForm`, `useBookingFlow`); валидация - чистые функции в `utils/`; строки UI - в `constants/booking.ts` (единый источник правды для компонентов и тестов).
+- **CSS Modules + Tailwind-токены.** Повторяющиеся классы вынесены в модули, палитра задана через `@theme` в `globals.css`.
+- **Hydration-безопасный рендер** через `useSyncExternalStore` - кнопка `disabled` до гидрации, исключён нативный сабмит пустой формы до готовности JS.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Что бы я доделал
+
+- **Сервер (например, Deno) и часть логики на бэкенд.** Клиентская валидация остаётся для мгновенных ошибок, сервер - финальный источник правды. `utils/validate.ts` уже чистые функции, готовы к переиспользованию на обеих сторонах.
+- **База данных.** SQLite для MVP (ноль настройки, один файл). PostgreSQL для продакшена (конкурентные брони, транзакции, репликация).
+- **Переключение темы.** Низкий приоритет для одного экрана. Если делать - через существующие CSS-токены + `data-theme` / `prefers-color-scheme`.
+- **Черновик формы в localStorage.** Восстановление полей после перезагрузки, с обязательной очисткой после успешного бронирования. Телефон - персональные данные, хранить не дольше необходимости.
+- **CI/CD.** lefthook на prepush (format, lint, test) + GitHub Actions на каждый PR (тесты, lint, typecheck, build) + автодеплой на Vercel.
