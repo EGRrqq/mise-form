@@ -20,6 +20,7 @@ export const BOOKING_FORM = {
   placeholderPhone: "+7 (999) 123-45-67",
   optionPlaceholder: "Выберите время",
   buttonSubmit: "Забронировать",
+  buttonLoading: "Бронируем…",
   timeSlots: [
     "12:00",
     "13:00",

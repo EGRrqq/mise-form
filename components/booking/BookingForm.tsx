@@ -10,9 +10,13 @@ import styles from "@/styles/BookingForm.module.css";
 
 interface BookingFormProps {
   onSubmit: (data: BookingFormData) => void;
+  loading?: boolean;
 }
 
-export default function BookingForm({ onSubmit }: BookingFormProps) {
+export default function BookingForm({
+  onSubmit,
+  loading = false,
+}: BookingFormProps) {
   const { form, errors, handleChange, handleBlur, handleSubmit } =
     useBookingForm(onSubmit);
 
@@ -120,8 +124,19 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
         />
       </FormField>
 
-      <button type="submit" disabled={!hydrated} className={styles.button}>
-        {BOOKING_FORM.buttonSubmit}
+      <button
+        type="submit"
+        disabled={!hydrated || loading}
+        className={styles.button}
+      >
+        {loading ? (
+          <span className={styles.buttonContent}>
+            <span className={styles.spinner} aria-hidden="true" />
+            {BOOKING_FORM.buttonLoading}
+          </span>
+        ) : (
+          BOOKING_FORM.buttonSubmit
+        )}
       </button>
     </form>
   );

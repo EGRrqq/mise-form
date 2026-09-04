@@ -40,3 +40,20 @@
 .button {
   @apply bg-amber-700 text-white rounded py-2.5 mt-2 font-medium hover:bg-amber-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-700;
 }
+
+.buttonContent {
+  @apply inline-flex items-center justify-center gap-2;
+}
+
+.spinner {
+  @apply inline-block h-4 w-4 rounded-full;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
