@@ -1,6 +1,7 @@
 {
-  "name": "mise-form",
-  "version": "0.1.0",
+  "name": "book-table-form",
+  "version": "1.0.0",
+  "description": "Страница онлайн-бронирования столика в ресторане: форма бронирования + подтверждение",
   "private": true,
   "scripts": {
     "dev": "next dev",
